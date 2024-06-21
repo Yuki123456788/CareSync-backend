@@ -1,0 +1,29 @@
+services:
+    caresync:
+        build: .
+        container_name: caresync
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/app
+            - media:/app/media
+        depends_on:
+            - postgres
+    postgres:
+        image: postgres:16.3
+        container_name: postgres
+        hostname: '${DB_HOST}'
+        ports:
+            - "${DB_PORT}:5432"
+        environment:
+            - POSTGRES_DB=${DB_NAME}
+            - POSTGRES_USER=${DB_USER}
+            - POSTGRES_PASSWORD=${DB_PASSWORD}
+            - TZ=${TIME_ZONE}
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        restart: always
+
+volumes:
+    db-data:
+    media:
