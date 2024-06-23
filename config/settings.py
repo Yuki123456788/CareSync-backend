@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     # apps
     "apps.api_token",
-    "apps.member",
+    "apps.membership",
 ]
 
 MIDDLEWARE = [
@@ -133,8 +133,8 @@ REST_FRAMEWORK = {
 
 # JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
 }
@@ -146,7 +146,12 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "CareSync RESTful API document<br>***注意: 所有api之url皆需要以`/`做為結尾, 否則可能造成動作產生錯誤***",
     "APPEND_COMPONENTS": {
         "securitySchemes": {
-            "JWT": {"type": "apiKey", "name": "Authorization", "in": "header"},
+            "JWT": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "Value should be formatted: `Bearer <access_token>`",
+            },
         },
     },
     "SERVE_INCLUDE_SCHEMA": False,
@@ -168,6 +173,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+
+STATIC_ROOT = BASE_DIR / "static/"
+
+
+# Media files
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = BASE_DIR / "media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
