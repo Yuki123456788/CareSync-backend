@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "caresync-backend"
+version = "0.1.0"
+description = ""
+authors = ["Yuki123456788 <yuki11835@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "4.2"
+python-dotenv = "^1.0.1"
+gunicorn = "^22.0.0"
+psycopg2-binary = "^2.9.9"
+djangorestframework = "^3.15.2"
+djangorestframework-simplejwt = "^5.3.1"
+django-filter = "^24.2"
+drf-spectacular = "^0.27.2"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+ruff = "^0.4.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+include = '\.pyi?$'
+extend-exclude = '''
+(
+    \.git/
+    | \.ruff_cache/
+    | /logs/
+    | /media/
+    | /venv/
+)
+'''
+line-length = 100
+
+[tool.ruff]
+select = [
+    "Q",
+    "I",
+    "F401",
+]
+exclude = [
+    ".git",
+    ".ruff_cache",
+    "logs",
+    "media",
+    "venv",
+]
+line-length = 100
+ignore-init-module-imports = true
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "double"
+docstring-quotes = "double"
