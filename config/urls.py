@@ -24,6 +24,7 @@ urlpatterns = [
     # path("admin/", admin.site.urls),
     path("api-token/", include("apps.api_token.urls")),
     path("membership/", include("apps.membership.urls")),
+    path("ai-assistance/", include("apps.ai_assistance.urls")),
 ]
 
 # drf-spectacular
