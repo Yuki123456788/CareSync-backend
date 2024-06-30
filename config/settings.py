@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # apps
     "apps.api_token",
     "apps.membership",
+    "apps.ai_assistance",
 ]
 
 MIDDLEWARE = [
@@ -182,6 +183,9 @@ STATIC_ROOT = BASE_DIR / "static/"
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media/"
+
+TEMP_MEDIA_ROOT = os.path.join(MEDIA_ROOT, "temp")  # for temporary audio files
+os.makedirs(TEMP_MEDIA_ROOT, exist_ok=True)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
