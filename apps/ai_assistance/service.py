@@ -6,6 +6,8 @@ from openai import OpenAI
 from .prompts import PROMPT_TYPE
 from .utils import get_system_message, get_openapi_key, get_audio_model, get_chat_model
 
+VALID_FILE_TYPES = [".mp3", ".mp4", ".mpeg", ".mpga", ".m4a", ".wav", ".webm"]
+
 
 class AIAssistanceService:
     def __init__(self):
@@ -38,8 +40,8 @@ class AIAssistanceService:
             return False, "File not found"
 
         # check file type
-        if not audio_path.endswith(".mp3"):
-            return False, "Invalid file type"
+        if not audio_path.endswith(tuple(VALID_FILE_TYPES)):
+            return False, "Invalid file type, Supported file types: " + ", ".join(VALID_FILE_TYPES)
 
         try:
             result = self.openai.audio.transcriptions.create(
@@ -143,14 +145,12 @@ class AIAssistanceService:
     def get_medicine_info(self, prescription: str):
         if not prescription:
             return False, "No prescription content"
-        
+
         try:
             response = self.openai.chat.completions.create(
                 model=self.chat_model,
                 response_format={"type": "json_object"},
-                messages=self._get_request_message(
-                    PROMPT_TYPE["GET_MEDICINE_INFO"], prescription
-                ),
+                messages=self._get_request_message(PROMPT_TYPE["GET_MEDICINE_INFO"], prescription),
             )
         except openai.APIConnectionError as e:
             return (False, f"Failed to connect to OpenAI API: {e}")
@@ -158,16 +158,22 @@ class AIAssistanceService:
             return (False, f"OpenAI API request exceeded rate limit: {e}")
         except openai.APIError as e:
             return (False, f"OpenAI API returned an API Error: {e}")
-        
+
         try:
             response_dict = json.loads(response.choices[0].message.content.replace("'", '"'))
         except json.JSONDecodeError as e:
             return (False, f"Failed to decode JSON response: {e}")
 
         def generate_medicine_info(medicine_info: dict) -> dict:
-            FIELDS = [("medicine_name", str, ""), ("appearance", str, ""), ("instruction", str, ""), ("precaution", str, ""), ("side_effect", str, "")]
+            FIELDS = [
+                ("medicine_name", str, ""),
+                ("appearance", str, ""),
+                ("instruction", str, ""),
+                ("precaution", str, ""),
+                ("side_effect", str, ""),
+            ]
             result = {}
-            
+
             if not medicine_info or not isinstance(medicine_info, dict):
                 for field, _, field_default in FIELDS:
                     result[field] = field_default
@@ -175,9 +181,14 @@ class AIAssistanceService:
             for field, _, field_default in FIELDS:
                 result[field] = medicine_info.get(field, field_default)
             return result
-        
+
         def generate_take_medicine_info(take_medicine_info: dict) -> dict:
-            FIELDS = [("start_date", str, ""), ("interval_days", int, 1), ("duration", int, 0), ("medicine_time", list, [])]
+            FIELDS = [
+                ("start_date", str, ""),
+                ("interval_days", int, 1),
+                ("duration", int, 0),
+                ("medicine_time", list, []),
+            ]
             result = {}
 
             if not take_medicine_info or not isinstance(take_medicine_info, dict):
@@ -190,7 +201,9 @@ class AIAssistanceService:
 
         result = {
             "medicine_info": generate_medicine_info(response_dict.get("medicine_info", {})),
-            "take_medicine_info": generate_take_medicine_info(response_dict.get("take_medicine_info", {})),
+            "take_medicine_info": generate_take_medicine_info(
+                response_dict.get("take_medicine_info", {})
+            ),
         }
 
         return True, result

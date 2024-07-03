@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
-from ..service import AIAssistanceService
+from ..service import AIAssistanceService, VALID_FILE_TYPES
 from ..serializers.medical_process_summary_serializer import (
     MedicalProcessSummaryRequestSerializer,
     MedicalProcessSummaryResponseSerializer,
@@ -29,9 +29,9 @@ class MedicalProcessSummaryView(APIView):
 
         audio_file = serializer.validated_data.get("audio")
 
-        if not audio_file.name.endswith(".mp3"):
+        if not audio_file.name.lower().endswith(tuple(VALID_FILE_TYPES)):
             return Response(
-                {"error": "Invalid file type, only mp3 files are supported"},
+                {"error": f"Invalid file type. Supported file types: {', '.join(VALID_FILE_TYPES)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
