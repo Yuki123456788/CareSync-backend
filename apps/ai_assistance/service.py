@@ -80,9 +80,30 @@ class AIAssistanceService:
         except json.JSONDecodeError as e:
             return (False, f"Failed to decode JSON response: {e}")
 
+        def generate_precaution_detail(precaution: dict) -> str:
+            if precaution and not isinstance(precaution, dict):
+                return ""
+            result = f"[{precaution.get('title')}]\n說明：{precaution.get('description')}\n"
+
+            if precaution.get("steps") and isinstance(precaution.get("steps"), list):
+                result += "執行步驟：\n"
+                for index, step in enumerate(precaution.get("steps")):
+                    result += f"{index + 1}. {step}\n"
+            return result
+
+        def generate_precautions(precautions: list) -> list:
+            if precautions and not isinstance(precautions, list):
+                return []
+            result = []
+            for precaution in precautions:
+                detail = generate_precaution_detail(precaution)
+                if detail:
+                    result.append(detail)
+            return result
+
         result = {
             "symptom": response_dict.get("symptom", ""),
-            "precautions": response_dict.get("precautions", ""),
+            "precautions": generate_precautions(response_dict.get("precautions", [])),
         }
 
         return True, result
