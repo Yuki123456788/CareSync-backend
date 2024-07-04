@@ -82,7 +82,16 @@ GET_MEDICINE_INFO_PROMPT = """
 - 開始服藥日期 (start_date)：開始服藥的日期，同常為開藥當天，為字串型態。
 - 服藥單位天數 (interval_days)：服藥是以幾天為一個週期還計算，如：一天三次的一天、兩天四次的兩天等，為整數型態。
 - 幾天的藥量 (duration)：提供的藥量可以持續幾天，為整數型態。
-- 服藥時間 (medicine_time)：服藥的時間，可能為三餐飯前、三餐飯後、睡前等，為Array型態，每次服藥的時間都為Array中的一項，如：['早餐後', '午餐後', '晚餐後']。
+- 服藥時間 (medicine_time)：服藥的時間，可能為三餐飯前、三餐飯後、睡前等，為Array型態，每次服藥的時間都為Array中的一項，Array中的內容要進行正規劃，如下
+```
+(取得的內容, 正規劃後的內容)
+(早餐前, Before Breakfast)(早餐後, After Breakfast)(午餐前, Before Lunch)(午餐後, After Lunch)(晚餐前, Before Dinner)(晚餐後, After Dinner)(睡前, Before Sleep)
+```
+如果從藥單上只有取得`早上`、`早`、`中午`、`晚上`、`晚`等資訊，一律預設為「餐後」，也就是`After ...`如下範例
+```
+(早上, After Breakfast)(晚上, After Dinner)(早, After Breakfast)(晚, After Dinner)
+```
+從藥單上取得的服藥時間不一定會如我寫的這樣，可能是`早`、`晚`、`早上吃`、`吃完早餐吃`等，你需要理解他的意思後轉換為對應正規劃的結果
 
 整體資料輸出格式說明：
 輸出請以JSON格式，Key分別為'medicine_info'和'take_medicine_info'，'medicine_info'的Value為JSON，裡面包含<藥物資訊>(medicine_info)中的五個項目，藥物名稱 (medicine_name)、藥物外觀 (appearance)、服用方式 (instruction)、注意事項 (precaution)、副作用 (side_effect)；'take_medicine_info'的Value為JSON，裡面包含<服藥資訊>(take_medicine_info)中的四個項目，開始服藥日期 (start_date)、服藥單位天數 (interval_days)、幾天的藥量 (duration)、服藥時間 (medicine_time)。以下為規定之輸出格式
