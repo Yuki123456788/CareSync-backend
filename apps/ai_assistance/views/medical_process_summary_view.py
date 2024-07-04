@@ -48,12 +48,7 @@ class MedicalProcessSummaryView(APIView):
             summary_success, summary = ai_assistance_service.get_audio_summary(transcript)
             if not summary_success:
                 return Response({"error": summary}, status=status.HTTP_400_BAD_REQUEST)
-            return Response(
-                {
-                    "symptom": summary.get("symptom", ""),
-                    "precautions": summary.get("precautions", ""),
-                },
-                status=status.HTTP_200_OK,
+            return Response(summary, status=status.HTTP_200_OK,
             )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -93,19 +93,19 @@ class AIAssistanceService:
                     result += f"{index + 1}. {step}\n"
             return result
 
-        def generate_precautions(precautions: list) -> list:
+        def generate_precautions(precautions: list) -> str:
             if precautions and not isinstance(precautions, list):
                 return []
-            result = []
+            result = ""
             for precaution in precautions:
                 detail = generate_precaution_detail(precaution)
                 if detail:
-                    result.append(detail)
+                    result += f"{detail}\n"
             return result
 
         result = {
             "symptom": response_dict.get("symptom", ""),
-            "precautions": generate_precautions(response_dict.get("precautions", [])),
+            "precautions": generate_precautions(response_dict.get("precautions", "")),
         }
 
         return True, result

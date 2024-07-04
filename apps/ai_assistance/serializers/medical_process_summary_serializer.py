@@ -7,7 +7,4 @@ class MedicalProcessSummaryRequestSerializer(serializers.Serializer):
 
 class MedicalProcessSummaryResponseSerializer(serializers.Serializer):
     symptom = serializers.CharField(help_text="病患症狀的說明")
-    precautions = serializers.ListField(
-        child=serializers.CharField(),
-        help_text="針對這個症狀平常需要注意的事項",
-    )
+    precautions = serializers.CharField(help_text="針對這個症狀平常需要注意的事項")
