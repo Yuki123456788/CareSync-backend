@@ -48,6 +48,7 @@ class AIAssistanceService:
                 model=self.audio_model,
                 response_format={"type": "json_object"},
                 file=file,
+                prompt="請使用繁體中文 (traditional Chinese) 進行語音轉文字。"
             )
         except openai.APIConnectionError as e:
             return (False, f"Failed to connect to OpenAI API: {e}")
